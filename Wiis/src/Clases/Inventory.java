@@ -14,9 +14,7 @@ public class Inventory {
 
     }
 
-    public static void updateProduct(Product product){
 
-    }
 
     //public static void
 
