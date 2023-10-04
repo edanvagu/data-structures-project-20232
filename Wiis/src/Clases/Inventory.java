@@ -42,8 +42,7 @@ public class Inventory {
 
     }
 
-    public void loadFile(){
 
-    }
+    public void loadFile(){
 
 }
