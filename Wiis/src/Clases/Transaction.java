@@ -19,6 +19,4 @@ public class Transaction {
         this.details.add(new TransactionDetail(product, amount));
     }
 
-
-
 }
