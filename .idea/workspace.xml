@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a41e0992-aba9-40be-8c6c-d7e68aa76fc4" name="Changes" comment="" />
+    <list default="true" id="a41e0992-aba9-40be-8c6c-d7e68aa76fc4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,9 +43,9 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "intentoArchivos",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Angel/IdeaProjects/Data-Structures-Project-2023-2",
+    "last_opened_file_path": "C:/Users/Angel/IdeaProjects/Proyecto/data-structures-project-20232",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -66,6 +68,8 @@
       <workItem from="1696379332612" duration="112000" />
       <workItem from="1696379455854" duration="49000" />
       <workItem from="1696380472387" duration="42000" />
+      <workItem from="1696455289006" duration="386000" />
+      <workItem from="1696455757490" duration="54000" />
     </task>
     <servers />
   </component>
