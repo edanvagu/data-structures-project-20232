@@ -9,9 +9,9 @@ public class Transaction {
     private String date;
     private List<TransactionDetail> details;
 
-    public Transaction(Boolean type, String date){
+    public Transaction(Boolean type){
         this.type = type;
-        this.date = date;
+        //this.date = date;
         this.details = new LinkedList<>();
     }
 

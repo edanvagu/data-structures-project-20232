@@ -17,7 +17,7 @@ public class TransactionHistory {
     public void printTransactions(){
         for (Transaction  t : transactions) {
             List<TransactionDetail> temp  =  t.getDetails();
-            System.out.println(t.getDate());
+            //System.out.println(t.getDate());
             for (TransactionDetail details : temp) {
                 System.out.println(details.getProduct().getName());
                 System.out.println(details.getProduct().getAmount());
