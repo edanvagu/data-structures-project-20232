@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a41e0992-aba9-40be-8c6c-d7e68aa76fc4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiis/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Wiis/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Wiis/src/Clases/gScriptTransactionHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/Wiis/src/Clases/gScriptTransactionHistory.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +44,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "intentoArchivos",
+    "git-widget-placeholder": "Edward",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/Angel/IdeaProjects/Proyecto/data-structures-project-20232",
     "node.js.detected.package.eslint": "true",
@@ -70,6 +71,7 @@
       <workItem from="1696380472387" duration="42000" />
       <workItem from="1696455289006" duration="386000" />
       <workItem from="1696455757490" duration="54000" />
+      <workItem from="1696626016089" duration="4000" />
     </task>
     <servers />
   </component>

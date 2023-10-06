@@ -10,7 +10,7 @@ public class generateScriptInventory {
 
     public static void main(String[] args) {
         String folderPath = System.getProperty("user.dir") + File.separator + "Files";
-        String fileName = folderPath + "/prueba.txt";
+        String fileName = folderPath +File.separator+ "pruebaInventory.txt";
 
         int cases = 1000;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
