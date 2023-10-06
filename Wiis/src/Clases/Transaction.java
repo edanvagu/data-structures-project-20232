@@ -4,25 +4,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Transaction {
-    private Boolean type;
+    private String type;
     private String date;
     private List<TransactionDetail> details;
 
-    public Transaction(Boolean type, String date){
+    public Transaction(String type, String date){
         this.type = type;
         this.date = date;
         this.details = new LinkedList<>();
     }
 
-    public void addTransactionDetail(Product product, int amount){
-        this.details.add(new TransactionDetail(product, amount));
+    public void addTransactionDetail(String productCode, int amount){
+        TransactionDetail detail = new TransactionDetail(productCode, amount);
+        this.details.add(detail);
     }
 
-    public Boolean getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Boolean type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -36,9 +37,5 @@ public class Transaction {
 
     public List<TransactionDetail> getDetails() {
         return details;
-    }
-
-    public void setDetails(List<TransactionDetail> details) {
-        this.details = details;
     }
 }

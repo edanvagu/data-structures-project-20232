@@ -19,7 +19,7 @@ public class generateScriptInventory {
     public List<Product> generate(){
         List<Product> products = new LinkedList<>();
         for (int i = 0; i < cuantity; i++) {
-            products.add(new Product(String.valueOf(i),String.valueOf(i),i,i));
+            products.add(new Product(String.valueOf(i),String.valueOf(i),i, i));
         }
         return products;
     }

@@ -1,20 +1,20 @@
 package Clases;
 
 public class TransactionDetail {
-    private Product product;
+    private String productCode;
     private int amount;
 
-    public TransactionDetail(Product product, int amount) {
-        this.product = product;
+    public TransactionDetail(String productCode, int amount) {
+        this.productCode = productCode;
         this.amount = amount;
     }
 
-    public Product getProduct() {
-        return product;
+    public String getProductCode() {
+        return productCode;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
     }
 
     public int getAmount() {

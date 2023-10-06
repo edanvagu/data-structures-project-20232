@@ -8,11 +8,23 @@ public class Main {
 //        Inventory inventory = new Inventory(new ArrayList<>());
 //        inventory.loadFile();
 //        inventory.printProducts();
-        TransactionHistory tx = new TransactionHistory();
-        Transaction num = new Transaction(true,"10-03-2015");
-        num.addTransactionDetail(new Product("001", "Pera", 0.5, 20), 10);
+        Product product = new Product("001", "Pera", 0.5, 5);
+        Inventory inventory = new Inventory();
+        inventory.addProduct(product);
+        inventory.printProducts();
+
+
+
+        TransactionHistory tx = new TransactionHistory(inventory);
+
+        Transaction num = new Transaction("compra","10-03-2015");
+
+        num.addTransactionDetail("001", 10);
+
         tx.addTransaction(num);
-        tx.saveFile();
+        inventory.printProducts();
+        inventory.saveFile();
+      //  tx.saveFile();
 
 
 //        ArrayList<Product> productos = new ArrayList<>();

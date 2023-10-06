@@ -9,17 +9,18 @@ import java.util.Scanner;
 
 public class Inventory {
     //CARPETA EN DONDE SE GUARDARA EL ARCHIVO DEL INVENTARIO (CAMBIAR PARA CADA PERSONA)
-    private String folderPath="C:\\Users\\Angel\\IdeaProjects\\Proyecto\\data-structures-project-20232\\Wiis\\src\\Files";
+    private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
+
     //NOMBRE DEL ARCHIVO PREDETERMINADO
     private String fileName="inventory.txt";
     private ArrayList<Product> products;
 
-    public Inventory(ArrayList<Product> items) {
-        this.products = items;
+    public Inventory() {
+        this.products = new ArrayList<>();
     }
 
     public void addProduct(Product product){
-        products.add(product);
+        this.products.add(product);
     }
 
     public void updateProductName(Product product, String newName){
@@ -31,18 +32,37 @@ public class Inventory {
         }
     }
 
+    public void updateProductPrice(Product product, String name, double newPrice){
+        for (Product  p : products) {
+            if (p.getName().equals(product.getName())){
+                p.setPrice(newPrice);
+                break;
+            }
+        }
+    }
+
+    public Product getProductByCode(String code) {
+        for (Product product : products) {
+            if (product.getCode().equals(code)) {
+                return product;
+            }
+        }
+        return null;
+    }
+
     public void removeProduct(Product product){
         for (Product  p : products) {
             if (p.getName().equals(product.getName())){
                 products.remove(p);
+                break;
             }
         }
     }
 
     public void printProducts(){
-        products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+        this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
         for (Product p : products) {
-            System.out.println(p.getName());
+            System.out.println(p.getName()+" "+p.getPrice()+" "+p.getAmount());
         }
     }
 
@@ -87,7 +107,7 @@ public class Inventory {
         this.products = products;
     }
     public ArrayList<Product> getProducts() {
-        return products;
+        return this.products;
     }
     public String getFileName() {
         return fileName;

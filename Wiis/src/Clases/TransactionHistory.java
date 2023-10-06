@@ -11,27 +11,68 @@ import java.util.Scanner;
 public class TransactionHistory {
 
     private List<Transaction> transactions;
+    private Inventory inventory;
     //CARPETA EN DONDE SE GUARDARA EL ARCHIVO DEL INVENTARIO (CAMBIAR PARA CADA PERSONA)
 
-    private String folderPath="./data-structures-project-20232/Wiis/src/Files";
+    private String folderPath = "./data-structures-project-20232/Wiis/src/Files";
     //NOMBRE DEL ARCHIVO PREDETERMINADO
-    private String fileName="transactionHistory.txt";
+    private String fileName = "transactionHistory.txt";
 
-    public TransactionHistory() {
+    public TransactionHistory(Inventory inventory) {
         this.transactions = new LinkedList<>();
+        this.inventory = inventory;
     }
 
-    public void addTransaction(Transaction transaction){
+    public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
+
+        for (TransactionDetail detail : transaction.getDetails()) {
+            String productCode = detail.getProductCode();
+            int amount = detail.getAmount();
+
+            Product productToUpdate = null;
+            for (Product product : inventory.getProducts()) {
+                if (product.getCode().equals(productCode)) {
+                    productToUpdate = product;
+                    break; // Encuentra el producto y sale del bucle
+                }
+            }
+
+            if (productToUpdate != null) {
+                if (transaction.getType().equals("compra")) {
+                    // Actualizar la cantidad cuando es una transacción de compra
+                    productToUpdate.setAmount(productToUpdate.getAmount() + amount);
+                } else if (transaction.getType().equals("venta")) {
+                    // Verificar si hay suficientes productos para la venta
+                    if (productToUpdate.getAmount() >= amount) {
+                        // Actualizar la cantidad cuando es una transacción de venta
+                        productToUpdate.setAmount(productToUpdate.getAmount() - amount);
+                    } else {
+                        // Manejar el caso en el que no hay suficientes productos para la venta
+                        System.out.println("No hay suficientes productos para la venta de " + productToUpdate.getName());
+                        // Puedes implementar una lógica adicional aquí, como registrar la transacción como fallida.
+                    }
+                }
+            } else {
+                // Manejar el caso en el que el producto no se encontró en el inventario
+                System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
+                // Puedes implementar una lógica adicional aquí, como registrar la transacción como fallida.
+            }
+        }
     }
+
 
     public void printTransactions(){
-        for (Transaction  t : transactions) {
-            List<TransactionDetail> temp  =  t.getDetails();
-            System.out.println(t.getDate());
+        for (Transaction t : transactions) {
+            List<TransactionDetail> temp = t.getDetails();
+            System.out.println("Fecha de Transacción: " + t.getDate());
+
             for (TransactionDetail details : temp) {
-                System.out.println(details.getProduct().getName());
-                System.out.println(details.getProduct().getAmount());
+                String productCode = details.getProductCode();
+                int amount = details.getAmount();
+
+                System.out.println("Código de Producto: " + productCode);
+                System.out.println("Cantidad involucrada: " + amount);
             }
         }
     }
@@ -50,12 +91,25 @@ public class TransactionHistory {
             FileWriter newFile = new FileWriter(archivo);
 
             for (Transaction t : this.transactions) {
-                newFile.write(t.getType()+"," +t.getDate()+ "\n");
-                for(int i =0; i<t.getDetails().size(); i++){
-                    TransactionDetail details = t.getDetails().get(i);
-                    newFile.write(details.getProduct().getCode()+","+details.getProduct().getName()+","+details.getProduct().getPrice()+","+details.getProduct().getAmount()+","+details.getAmount()+","+ "\n");
+                newFile.write(t.getType() + "," + t.getDate() + "\n");
+                for (TransactionDetail details : t.getDetails()) {
+                    String productCode = details.getProductCode();
+                    int amount = details.getAmount();
+
+                    Product product = inventory.getProductByCode(productCode);
+
+                    if (product != null) {
+                        String productName = product.getName();
+                        double productPrice = product.getPrice();
+
+                        String productDetails = productCode + "," + productName + "," + productPrice + "," + amount;
+
+                        newFile.write(productDetails + "\n");
+                    } else {
+                        System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
+                    }
                 }
-                newFile.write("a"+"\n");
+                newFile.write("a" + "\n");
             }
             newFile.close();
         } catch (IOException e) {
@@ -81,3 +135,5 @@ public class TransactionHistory {
     }
 
 }
+
+
