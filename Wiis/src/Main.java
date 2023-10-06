@@ -1,14 +1,13 @@
 import Clases.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Inventory inventory = new Inventory();
         TransactionHistory transactionHistory = new TransactionHistory(inventory);
-
+        inventory.loadFile();
+        transactionHistory.loadFile();
         // Crear un objeto Scanner para leer la entrada del usuario
         Scanner scanner = new Scanner(System.in);
 
