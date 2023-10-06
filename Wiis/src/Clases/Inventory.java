@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Inventory {
     //CARPETA EN DONDE SE GUARDARA EL ARCHIVO DEL INVENTARIO (CAMBIAR PARA CADA PERSONA)
-    private String folderPath="C:\\Users\\Angel\\IdeaProjects\\Proyecto\\data-structures-project-20232\\Wiis\\src\\Files";
+    private String folderPath="./data-structures-project-20232/Wiis/src/Files";
     //NOMBRE DEL ARCHIVO PREDETERMINADO
     private String fileName="inventory.txt";
     private ArrayList<Product> products;
@@ -48,7 +48,12 @@ public class Inventory {
 
     public void saveFile(){
         try{
-            FileWriter newFile = new FileWriter(this.folderPath+File.separator+this.fileName);
+            File carpeta = new File(folderPath);
+            if (!carpeta.exists()) {
+                carpeta.mkdirs();  // Crear la carpeta si no existe
+            }
+            File archivo = new File(carpeta, this.fileName);
+            FileWriter newFile = new FileWriter(archivo);
             for (Product p : products) {
                 newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getAmount()+ "\n");
             }

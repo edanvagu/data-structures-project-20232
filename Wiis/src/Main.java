@@ -15,13 +15,13 @@ public class Main {
         tx.saveFile();
 
 
-//        ArrayList<Product> productos = new ArrayList<>();
-//        productos.add(new Product("001", "Pera", 0.5, 10));
-//        productos.add(new Product("002", "Naranja", 0.6, 15));
-//        productos.add(new Product("003", "Manzana", 0.7, 12));
-//        Inventory inventory = new Inventory(productos);
-//        inventory.saveFile();
-//        inventory.printProducts();
+        ArrayList<Product> productos = new ArrayList<>();
+        productos.add(new Product("001", "Pera", 0.5, 10));
+        productos.add(new Product("002", "Naranja", 0.6, 15));
+        productos.add(new Product("003", "Manzana", 0.7, 12));
+        Inventory inventory = new Inventory(productos);
+        inventory.saveFile();
+        inventory.printProducts();
 
 //        Transaction transaction = new Transaction(true,"10-11-2022");
 //
