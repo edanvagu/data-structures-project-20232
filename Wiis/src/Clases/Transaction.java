@@ -48,4 +48,8 @@ public class Transaction {
     public List<TransactionDetail> getDetails() {
         return details;
     }
+
+    public void setDetails(List<TransactionDetail> details) {
+        this.details = details;
+    }
 }

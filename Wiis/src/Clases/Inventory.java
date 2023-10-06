@@ -81,11 +81,11 @@ public class Inventory {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
-                String code = line[0];
-                String name = line[1];
-                double price = Double.parseDouble(line[2]);
-                int amount = Integer.parseInt(line[3]);
-                this.products.add(new Product(code, name, price, amount));
+                String productCode = line[0];
+                String productName = line[1];
+                double productPrice = Double.parseDouble(line[2]);
+                int productAmount = Integer.parseInt(line[3]);
+                this.products.add(new Product(productCode, productName, productPrice, productAmount));
             }
             sc.close();
         } catch (FileNotFoundException e) {
