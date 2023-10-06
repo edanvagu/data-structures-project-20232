@@ -8,10 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Inventory {
-    //CARPETA EN DONDE SE GUARDARA EL ARCHIVO DEL INVENTARIO (CAMBIAR PARA CADA PERSONA)
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
-
-    //NOMBRE DEL ARCHIVO PREDETERMINADO
     private String fileName="inventory.txt";
     private ArrayList<Product> products;
 
@@ -23,37 +20,37 @@ public class Inventory {
         this.products.add(product);
     }
 
-    public void updateProductName(Product product, String newName){
-        for (Product  p : products) {
-            if (p.getName().equals(product.getName())){
-                p.setName(newName);
+    public void updateProductName(String productCode, String newName){
+        for (Product product : getProducts()) {
+            if (product.getCode().equals(productCode)) {
+                product.setName(newName);
                 break;
             }
         }
     }
 
-    public void updateProductPrice(Product product, String name, double newPrice){
-        for (Product  p : products) {
-            if (p.getName().equals(product.getName())){
-                p.setPrice(newPrice);
+    public void updateProductPrice(String productCode, double newPrice){
+        for (Product product : getProducts()) {
+            if (product.getCode().equals(productCode)) {
+                product.setPrice(newPrice);
                 break;
             }
         }
     }
 
-    public Product getProductByCode(String code) {
-        for (Product product : products) {
-            if (product.getCode().equals(code)) {
+    public Product getProductByCode(String productCode) {
+        for (Product product : getProducts()) {
+            if (product.getCode().equals(productCode)) {
                 return product;
             }
         }
         return null;
     }
 
-    public void removeProduct(Product product){
-        for (Product  p : products) {
-            if (p.getName().equals(product.getName())){
-                products.remove(p);
+    public void removeProduct(String productCode){
+        for (Product product : getProducts()) {
+            if (product.getCode().equals(productCode)) {
+                this.products.remove(product);
                 break;
             }
         }
@@ -61,15 +58,15 @@ public class Inventory {
 
     public void printProducts(){
         this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-        for (Product p : products) {
-            System.out.println(p.getName()+" "+p.getPrice()+" "+p.getAmount());
+        for (Product p : getProducts()) {
+            System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
         }
     }
 
     public void saveFile(){
         try{
             FileWriter newFile = new FileWriter(this.folderPath+File.separator+this.fileName);
-            for (Product p : products) {
+            for (Product p : getProducts()) {
                 newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getAmount()+ "\n");
             }
             newFile.close();

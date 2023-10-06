@@ -5,25 +5,43 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-//        Inventory inventory = new Inventory(new ArrayList<>());
-//        inventory.loadFile();
-//        inventory.printProducts();
-        Product product = new Product("001", "Pera", 0.5, 5);
+
         Inventory inventory = new Inventory();
+        Product product = new Product("001", "Pera", 0.5, 5);
+        Product product2 = new Product("002", "Apio", 0.5, 5);
+
+
+
         inventory.addProduct(product);
+        inventory.addProduct(product2);
+      //  inventory.printProducts();
+
+
+
+        TransactionHistory transactions = new TransactionHistory(inventory);
+
+        Transaction t = new Transaction("t001", "compra","10-03-2015");
+
+        t.addTransactionDetail("001", 10);
+        t.addTransactionDetail("002", 6);
+
+        transactions.addTransaction(t);
+ //       transactions.printTransactions();
+
+        Transaction f = new Transaction("t002", "venta","05-10-2020");
+
+        f.addTransactionDetail("001", 2);
+        f.addTransactionDetail("002", 3);
+
+        transactions.addTransaction(f);
+
+        transactions.printTransactions();
+
         inventory.printProducts();
 
+        transactions.saveFile();
 
-
-        TransactionHistory tx = new TransactionHistory(inventory);
-
-        Transaction num = new Transaction("compra","10-03-2015");
-
-        num.addTransactionDetail("001", 10);
-
-        tx.addTransaction(num);
-        inventory.printProducts();
-        inventory.saveFile();
+      //  inventory.saveFile();
       //  tx.saveFile();
 
 
