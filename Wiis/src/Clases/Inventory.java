@@ -30,6 +30,9 @@ public class Inventory {
     }
 
     public void updateProductPrice(String productCode, double newPrice){
+        if (newPrice < 0) {
+            throw new IllegalArgumentException("Price and quantity cannot be negative.");
+        }
         for (Product product : getProducts()) {
             if (product.getCode().equals(productCode)) {
                 product.setPrice(newPrice);
@@ -56,15 +59,35 @@ public class Inventory {
         }
     }
 
-    public void printProducts(){
+    public void sortInventory(){
         this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+    }
+
+    public void printProducts(){
+        this.sortInventory();
         for (Product p : getProducts()) {
             System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
         }
     }
 
+    public void filterInventoryByPrice(String operator, double price) throws Exception {
+        for (Product p : getProducts()) {
+            if(operator.equals("less than") && p.getPrice() < price){
+                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
+            }else if(operator.equals("equals") && p.getPrice() == price){
+                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
+            }else if(operator.equals("more than") && p.getPrice() > price){
+                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
+            }
+        }
+    }
+
     public void saveFile(){
         try{
+            File folder = new File(this.folderPath);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
             FileWriter newFile = new FileWriter(this.folderPath+File.separator+this.fileName);
             for (Product p : getProducts()) {
                 newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getAmount()+ "\n");

@@ -51,8 +51,12 @@ public class TransactionHistory {
         }
     }
 
+    public void sortTransactionHistory(){
+        this.transactions.sort((t1, t2) -> t1.getDate().compareTo(t2.getDate()));
+    }
 
     public void printTransactions(){
+        this.sortTransactionHistory();
         for (Transaction t : transactions) {
             System.out.println("Fecha de Transacción: " + t.getDate());
             System.out.println("Tipo de Transacción: " + t.getType());
@@ -65,10 +69,6 @@ public class TransactionHistory {
                 System.out.println("Cantidad involucrada: " + amount);
             }
         }
-    }
-
-    public void printTransactions(String initial, String finalDate){
-
     }
 
     public void saveFile(){

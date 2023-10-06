@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-//NO FINALIZADO
 public class generateScriptInventory {
     final int cuantity;
     Random random = new Random();

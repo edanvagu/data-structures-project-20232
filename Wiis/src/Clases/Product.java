@@ -6,6 +6,9 @@ public class Product {
     private int amount;
 
     public Product(String code, String name, double price, int amount) {
+        if (price < 0 || amount < 0) {
+            throw new IllegalArgumentException("Price and quantity cannot be negative.");
+        }
         this.code = code;
         this.name = name;
         this.price = price;
