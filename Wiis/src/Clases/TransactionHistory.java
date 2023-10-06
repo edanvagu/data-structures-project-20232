@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class TransactionHistory {
@@ -64,17 +65,20 @@ public class TransactionHistory {
         }
 
     }
-    public void loadFile(){
+    public void loadFile() {
         try {
-            File file = new File(this.folderPath);
+            File file = new File(this.folderPath + File.separator + this.fileName);
             Scanner sc = new Scanner(file);
+
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
                 Boolean type = Boolean.parseBoolean(line[0]);
                 String date = line[1];
                 Transaction tx = new Transaction(type, date);
-                while(!sc.nextLine().equals("end")){
-                    String[] line2 = sc.nextLine().split(",");
+
+                String nextLine = sc.nextLine(); // Leer la siguiente línea
+                while (!Objects.equals(nextLine, "end")) {
+                    String[] line2 = nextLine.split(",");
                     String code = line2[0];
                     String name = line2[1];
                     double price = Double.parseDouble(line2[2]);
@@ -82,7 +86,10 @@ public class TransactionHistory {
                     Product product = new Product(code, name, price, amount);
                     int amount2 = Integer.parseInt(line2[4]);
                     tx.addTransactionDetail(product, amount2);
+                    // Leer la siguiente línea para la próxima iteración
+                    nextLine = sc.nextLine();
                 }
+
                 this.transactions.add(tx);
             }
             sc.close();
@@ -90,8 +97,8 @@ public class TransactionHistory {
             System.out.println("An error occurred while reading the file " + this.fileName);
             throw new RuntimeException(e);
         }
-
     }
+
     public String getFileName(){
         return this.fileName;
     }
