@@ -13,7 +13,7 @@ public class generateScriptInventory {
 
         String fileName = folderPath +File.separator+ "inventory.txt";
 
-        int cases = 100;
+        int cases = 10000000;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             Random random = new Random();
 

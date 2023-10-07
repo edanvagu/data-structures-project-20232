@@ -13,7 +13,7 @@ public class gScriptTransactionHistory {
 
         String fileName = folderPath + File.separator + "transactionHistory.txt";
 
-        int cases=100000000;
+        int cases=10000;
         String[] types = {"compra","venta"};
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {

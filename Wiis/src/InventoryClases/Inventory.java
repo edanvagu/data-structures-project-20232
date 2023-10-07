@@ -32,6 +32,32 @@ public class Inventory {
         countProducts++;
     }
 
+
+    public void searchAll(){
+        long tiempoInicial = System.nanoTime();
+        for (Product product : products) {
+            if(product.getCode().equals("P9999999")){
+                break;
+            }
+        }
+        long tiempoFinal = System.nanoTime();
+        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+
+        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+                "nanosegundos");
+    }
+    public void updateAll(){
+        long tiempoInicial = System.nanoTime();
+        for (Product product : products) {
+            product.setAmount(product.getAmount()+1);
+        }
+        long tiempoFinal = System.nanoTime();
+        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+
+        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+                "nanosegundos");
+    }
+
     public boolean updateProductName(String productCode, String newName){
         if(getProductByCode(productCode) != null) {
             for (Product product : getProducts()) {
@@ -72,6 +98,18 @@ public class Inventory {
                 break;
             }
         }
+    }
+
+    public void removeAll() {
+        long tiempoInicial = System.nanoTime();
+        for (int i = products.size()-1; i >= 0; i--) {
+            this.products.remove(i);
+        }
+        long tiempoFinal = System.nanoTime();
+        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+
+        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+                "nanosegundos");
     }
 
     public void sortInventory(){
@@ -118,11 +156,10 @@ public class Inventory {
         try {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
-            //while (sc.hasNextLine()) {
-            List<Long> tiempos = new ArrayList<>();
-            int tamanio = 10000;
-            long tiempoInicial = System.nanoTime();
-            for (int i = 0; i < tamanio; i++) {
+            while (sc.hasNextLine()) {
+            //int tamanio = 100;
+            //long tiempoInicial = System.nanoTime();
+            //for (int i = 0; i < tamanio; i++) {
                 String[] line = sc.nextLine().split(",");
                 String productCode = line[0];
                 String productName = line[1];
@@ -132,11 +169,11 @@ public class Inventory {
                 addProduct(new Product(productCode, productName, productPrice, productAmount));
 
             }
-            long tiempoFinal = System.nanoTime();
-            long tiempoEjecucion = tiempoFinal - tiempoInicial;
-            tiempos.add(tiempoEjecucion);
+            //long tiempoFinal = System.nanoTime();
+            //long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-            System.out.println("Tamaño de datos: " + tamanio + ", Tiempo de ejecución: " + tiempoEjecucion + " nanosegundos");
+            //System.out.println("Tamaño de datos: " + tamanio + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+             //       "nanosegundos");
             sc.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while reading the file " + this.fileName);
