@@ -1,26 +1,22 @@
-import Clases.*;
+import InventoryClases.*;
+import MenuClases.InventoryManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        List<Product> productos = new ArrayList<>();
-        productos.add(new Product("001", "Pera", 0.5, 10));
-        productos.add(new Product("002", "Naranja", 0.6, 15));
-        productos.add(new Product("003", "Manzana", 0.7, 12));
-        Inventory inventory = new Inventory(productos);
+    public static void main(String[] args) throws Exception {
 
-        //inventory.printProducts();
+        System.out.println("asdfasdf");
 
-        Transaction transaction = new Transaction(true);
+        Inventory inventory = new Inventory();
+        TransactionHistory transactionHistory = new TransactionHistory(inventory);
 
-        transaction.addTransactionDetail(new Product("001", "Pera", 0.5, 10), 10);
+        //inventory.loadFile();
+        //transactionHistory.loadFile();
 
-        TransactionHistory transactionHistory = new TransactionHistory();
-        transactionHistory.addTransaction(transaction);
+        InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
 
-        transactionHistory.printTransactions();
+        //inventoryManager.runInventoryMenu();
 
     }
 }
