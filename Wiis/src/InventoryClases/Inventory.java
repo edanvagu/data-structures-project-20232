@@ -1,37 +1,25 @@
 package InventoryClases;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Scanner;
 
 public class Inventory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
     private String fileName="inventory.txt";
-    private ArrayList<Product> products;
-
+    private Queue<Product> products;
     private int countProducts = 0;
 
-    public int getCountProducts() {
-        return countProducts;
-    }
-
-    public void setCountProducts(int countProducts) {
-        this.countProducts = countProducts;
-    }
-
     public Inventory() {
-        this.products = new ArrayList<>();
+        this.products = new LinkedList<>();
     }
 
     public void addProduct(Product product){
-        this.products.add(product);
+        this.products.offer(product);
         countProducts++;
     }
-
 
     public void searchAll(){
         long tiempoInicial = System.nanoTime();
@@ -46,10 +34,22 @@ public class Inventory {
         System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
                 "nanosegundos");
     }
+
     public void updateAll(){
         long tiempoInicial = System.nanoTime();
         for (Product product : products) {
             product.setAmount(product.getAmount()+1);
+        }
+        long tiempoFinal = System.nanoTime();
+        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+
+        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+                "nanosegundos");
+    }
+    public void removeAll() {
+        long tiempoInicial = System.nanoTime();
+        while (!products.isEmpty()) {
+            products.poll();
         }
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
@@ -100,28 +100,17 @@ public class Inventory {
         }
     }
 
-    public void removeAll() {
-        long tiempoInicial = System.nanoTime();
-        for (int i = products.size()-1; i >= 0; i--) {
-            this.products.remove(i);
-        }
-        long tiempoFinal = System.nanoTime();
-        long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-                "nanosegundos");
-    }
+    //public void sortInventory(){
+        //this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+    //}
 
-    public void sortInventory(){
-        this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-    }
-
-    public void printProducts(){
+    /*public void printProducts(){
         this.sortInventory();
         for (Product p : getProducts()) {
             System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
         }
-    }
+    }*/
 
     public void filterInventoryByPrice(String operator, double price) throws Exception {
         for (Product p : getProducts()) {
@@ -157,7 +146,7 @@ public class Inventory {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
-            //int tamanio = 100;
+            //int tamanio = 10000000;
             //long tiempoInicial = System.nanoTime();
             //for (int i = 0; i < tamanio; i++) {
                 String[] line = sc.nextLine().split(",");
@@ -173,7 +162,7 @@ public class Inventory {
             //long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
             //System.out.println("Tamaño de datos: " + tamanio + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-             //       "nanosegundos");
+              //      "nanosegundos");
             sc.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while reading the file " + this.fileName);
@@ -184,20 +173,33 @@ public class Inventory {
     public void setFileName(String folderName) {
         this.fileName = folderName;
     }
+
     public void setFolderPath(String folderPath) {
         this.folderPath = folderPath;
     }
-    public void setProducts(ArrayList<Product> products) {
+
+    public void setProducts(Queue<Product> products) {
         this.products = products;
     }
-    public ArrayList<Product> getProducts() {
+
+    public void setCountProducts(int countProducts) {
+        this.countProducts = countProducts;
+    }
+
+    public Queue<Product> getProducts() {
         return this.products;
     }
+
     public String getFileName() {
         return fileName;
     }
+
     public String getFolderPath() {
         return folderPath;
+    }
+
+    public int getCountProducts() {
+        return countProducts;
     }
 
 

@@ -73,7 +73,7 @@ public class InventoryManager {
                     break;
                 case 7:
 
-                    inventory.printProducts();
+                    //inventory.printProducts();
                     break;
 
                 case 8:
