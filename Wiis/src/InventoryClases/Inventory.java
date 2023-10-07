@@ -118,25 +118,14 @@ public class Inventory {
         try {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
-            //while (sc.hasNextLine()) {
-            List<Long> tiempos = new ArrayList<>();
-            int tamanio = 10000;
-            long tiempoInicial = System.nanoTime();
-            for (int i = 0; i < tamanio; i++) {
+            while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
                 String productCode = line[0];
                 String productName = line[1];
                 double productPrice = Double.parseDouble(line[2]);
                 int productAmount = Integer.parseInt(line[3]);
-
                 addProduct(new Product(productCode, productName, productPrice, productAmount));
-
             }
-            long tiempoFinal = System.nanoTime();
-            long tiempoEjecucion = tiempoFinal - tiempoInicial;
-            tiempos.add(tiempoEjecucion);
-
-            System.out.println("Tamaño de datos: " + tamanio + ", Tiempo de ejecución: " + tiempoEjecucion + " nanosegundos");
             sc.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while reading the file " + this.fileName);
