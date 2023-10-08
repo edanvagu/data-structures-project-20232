@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 public class Inventory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
     private String fileName="inventory.txt";
-    private Queue<Product> products;
+    private List<Product> products;
     private int countProducts = 0;
 
     public Inventory() {
@@ -17,17 +17,16 @@ public class Inventory {
     }
 
     public void addProduct(Product product){
-        this.products.offer(product);
+        this.products.add(product);
         countProducts++;
     }
 
     public void searchAll(){
+        Product p = getProductByCode("P9999999");
         long tiempoInicial = System.nanoTime();
-        for (Product product : products) {
-            if(product.getCode().equals("P9999999")){
-                break;
-            }
-        }
+
+        products.contains(p);
+
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
@@ -48,8 +47,8 @@ public class Inventory {
     }
     public void removeAll() {
         long tiempoInicial = System.nanoTime();
-        while (!products.isEmpty()) {
-            products.poll();
+        for (Product product : products) {
+            products.remove(product);
         }
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
@@ -178,7 +177,7 @@ public class Inventory {
         this.folderPath = folderPath;
     }
 
-    public void setProducts(Queue<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 
@@ -186,7 +185,7 @@ public class Inventory {
         this.countProducts = countProducts;
     }
 
-    public Queue<Product> getProducts() {
+    public List<Product> getProducts() {
         return this.products;
     }
 

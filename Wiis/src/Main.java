@@ -12,9 +12,9 @@ public class Main {
 
         inventory.loadFile();
         //transactionHistory.loadFile();
-        inventory.removeAll();
+        //inventory.removeAll();
         //inventory.updateAll();
-        //inventory.searchAll();
+        inventory.searchAll();
 
 
         InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
