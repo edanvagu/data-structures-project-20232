@@ -8,10 +8,6 @@ public class Main {
 
         Inventory inventory = new Inventory();
         TransactionHistory transactionHistory = new TransactionHistory(inventory);
-
-        inventory.loadFile();
-        transactionHistory.loadFile();
-
         InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
 
         inventoryManager.runInventoryMenu();
