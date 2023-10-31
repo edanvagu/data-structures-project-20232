@@ -5,15 +5,20 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
-import java.util.List;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class Inventory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
     private String fileName="inventory.txt";
     private ArrayList<Product> products;
+    private TreeMap<String, Product> alphabeticInventory = new TreeMap<>();    
 
     private int countProducts = 0;
+    
+    public Inventory() {
+        this.products = new ArrayList<>();
+    }
 
     public int getCountProducts() {
         return countProducts;
@@ -23,17 +28,19 @@ public class Inventory {
         this.countProducts = countProducts;
     }
 
-    public Inventory() {
-        this.products = new ArrayList<>();
-    }
-
     public void addProduct(Product product){
         this.products.add(product);
         countProducts++;
+        alphabeticInventory.put(product.getName(), product);
     }
 
     public boolean updateProductName(String productCode, String newName){
         if(getProductByCode(productCode) != null) {
+            //actualizar el nombre del producto en el mapa
+            alphabeticInventory.remove(getProductByCode(productCode).getName());
+            alphabeticInventory.put(newName, getProductByCode(productCode));
+            //PENDIENTE ACTUALIZAR EL NOMBRE DEL PRODUCTO SI SE CAMBIA EL NOMBRE
+             
             for (Product product : getProducts()) {
                 if (product.getCode().equals(productCode)) {
                     product.setName(newName);
@@ -66,22 +73,20 @@ public class Inventory {
     }
 
     public void removeProduct(String productCode){
+        alphabeticInventory.remove(getProductByCode(productCode).getName());
         for (Product product : getProducts()) {
             if (product.getCode().equals(productCode)) {
                 this.products.remove(product);
                 break;
             }
         }
-    }
 
-    public void sortInventory(){
-        this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
     }
 
     public void printProducts(){
-        this.sortInventory();
-        for (Product p : getProducts()) {
-            System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
+        //imprime los productos en orden alfabetico
+        for (String productName : alphabeticInventory.keySet()) {
+            System.out.println(alphabeticInventory.get(productName).getCode()+" "+alphabeticInventory.get(productName).getName()+" "+alphabeticInventory.get(productName).getPrice()+" "+alphabeticInventory.get(productName).getAmount());
         }
     }
 

@@ -30,7 +30,8 @@ public class InventoryManager {
             System.out.println("6. Realizar Venta");
             System.out.println("7. Imprimir Productos en el Inventario");
             System.out.println("8. Imprimir Transacciones");
-            System.out.println("9. Salir");
+            System.out.println("9. Mostrar los 3 productos más vendidos");
+            System.out.println("10. Salir");
             System.out.print("Por favor, seleccione una opción: ");
 
             int option = scanner.nextInt();
@@ -82,6 +83,11 @@ public class InventoryManager {
                     break;
 
                 case 9:
+                    //Mostrar los 3 productos más vendidos
+                    transactionHistory.getMostSoldProducts();
+                    break;
+                
+                case 10:
                     // Salir del programa
                     inventory.saveFile();
                     transactionHistory.saveFile();
