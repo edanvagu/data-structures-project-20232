@@ -137,7 +137,6 @@ public class Inventory {
             throw new RuntimeException(e);
         }
     }
-
     public void setFileName(String folderName) {
         this.fileName = folderName;
     }

@@ -1,7 +1,6 @@
 package IU;
+
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,7 +13,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import InventoryClases.*;
 
+
+
 public class InventoryUI extends Application {
+
+    private final Inventory inventory = new Inventory();
+    private TableView<Product> table;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,18 +38,18 @@ public class InventoryUI extends Application {
         addProductButton.setOnAction(e -> showAddProductWindow());
 
         // Crear la tabla de productos
-        TableView<Product> table = new TableView<>();
+        table = new TableView<>();
         TableColumn<Product, String> idCol = new TableColumn<>("ID");
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("code"));
 
         TableColumn<Product, String> nameCol = new TableColumn<>("Nombre");
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         TableColumn<Product, Double> priceCol = new TableColumn<>("Precio");
-        priceCol.setCellValueFactory(new PropertyValueFactory<>("precio"));
+        priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
         TableColumn<Product, Integer> amountCol = new TableColumn<>("Cantidad");
-        amountCol.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
 
         table.getColumns().addAll(idCol, nameCol, priceCol, amountCol);
 
@@ -73,6 +77,10 @@ public class InventoryUI extends Application {
         mainLayout.setLeft(sideMenu);
         mainLayout.setCenter(root);
 
+        addContextMenuToTableRows();
+
+        reloadProducts();
+
         Scene scene1 = new Scene(mainLayout, 1000, 600); // Ajusta el tamaño si es necesario
         primaryStage.setScene(scene1);
         primaryStage.show();
@@ -94,16 +102,31 @@ public class InventoryUI extends Application {
         TextField quantityField = new TextField();
         quantityField.setPromptText("Cantidad del producto");
 
+        Label messageLabel = new Label(); // Etiqueta para mostrar mensajes al usuario
+
         Button addButton = new Button("Añadir");
         addButton.setOnAction(e -> {
-            // Aquí añades el código para procesar los datos ingresados
+            try {
+                // Aquí añades el código para procesar los datos ingresados
+                String name = nameField.getText();
+                double price = Double.parseDouble(priceField.getText());
+                int quantity = Integer.parseInt(quantityField.getText());
+                String productCode = "P" + String.valueOf(inventory.getCountProducts());
+                Product product = new Product(productCode,name, price, quantity);
+                inventory.addProduct(product);
+                messageLabel.setText("Producto añadido con éxito!");
 
-            // Por ejemplo, guardar en una base de datos o añadir a la tabla
+                reloadProducts();
 
-            addProductStage.close(); // Cierra la ventana de añadir producto
+                addProductStage.close(); // Cierra la ventana de añadir producto
+            } catch (NumberFormatException ex) {
+                messageLabel.setText("Por favor, introduce un número válido para el precio y la cantidad.");
+            } catch (Exception ex) {
+                messageLabel.setText("Ocurrió un error al añadir el producto. Por favor, inténtalo de nuevo.");
+            }
         });
 
-        VBox layout = new VBox(10, nameField, priceField, quantityField, addButton);
+        VBox layout = new VBox(10, nameField, priceField, quantityField, addButton, messageLabel);
         layout.setPadding(new Insets(10));
 
         Scene addProductScene = new Scene(layout, 300, 200);
@@ -111,42 +134,31 @@ public class InventoryUI extends Application {
         addProductStage.showAndWait(); // Espera hasta que esta ventana se cierre
     }
 
-    private ContextMenu createProductContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem updatePriceItem = new MenuItem("Actualizar precio");
-        updatePriceItem.setOnAction(e -> {
-            // Lógica para actualizar el precio
+    private void showUpdateNameWindow(Product selectedProduct) {
+        Stage modal = new Stage();
+        modal.initModality(Modality.APPLICATION_MODAL);
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+
+        Label label = new Label("Actualizar nombre para: " + selectedProduct.getName());
+        TextField nameField = new TextField();
+        nameField.setPromptText("Nuevo nombre");
+        Button updateButton = new Button("Actualizar");
+
+        updateButton.setOnAction(e -> {
+            String newName = nameField.getText();
+            inventory.updateProductName(selectedProduct.getCode(), newName); // Utiliza el método de actualización de Inventory
+            reloadProducts(); // Recarga los productos en la tabla
+            modal.close();
         });
 
-        MenuItem updateNameItem = new MenuItem("Actualizar nombre");
-        updateNameItem.setOnAction(e -> {
-            // Lógica para actualizar el nombre
-        });
+        layout.getChildren().addAll(label, nameField, updateButton);
 
-        MenuItem deleteProductItem = new MenuItem("Eliminar producto");
-        deleteProductItem.setOnAction(e -> {
-            // Lógica para eliminar el producto
-        });
-
-        contextMenu.getItems().addAll(updatePriceItem, updateNameItem, deleteProductItem);
-        return contextMenu;
-    }
-
-    private void addContextMenuToTableRows(TableView<String> table) {
-        ContextMenu contextMenu = createProductContextMenu();
-
-        table.setRowFactory(tableView -> {
-            TableRow<String> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.SECONDARY && !row.isEmpty()) { // Detecta clic derecho
-                    contextMenu.show(row, event.getScreenX(), event.getScreenY());
-                } else if (event.getButton() == MouseButton.PRIMARY) { // Detecta clic izquierdo
-                    contextMenu.hide();
-                }
-            });
-            return row;
-        });
+        Scene modalScene = new Scene(layout);
+        modal.setScene(modalScene);
+        modal.showAndWait();
     }
 
     private void showUpdatePriceWindow(Product selectedProduct) {
@@ -162,10 +174,14 @@ public class InventoryUI extends Application {
         Button updateButton = new Button("Actualizar");
 
         updateButton.setOnAction(e -> {
-            // Aquí coloca la lógica para actualizar el precio
-            double newPrice = Double.parseDouble(priceField.getText());
-            selectedProduct.setPrice(newPrice);
-            modal.close();
+            try {
+                double newPrice = Double.parseDouble(priceField.getText());
+                inventory.updateProductPrice(selectedProduct.getCode(), newPrice); // Utiliza el método de actualización de Inventory
+                reloadProducts(); // Recarga los productos en la tabla
+                modal.close();
+            } catch (NumberFormatException ex) {
+                // Maneja el caso en que el texto ingresado no sea un número válido
+            }
         });
 
         layout.getChildren().addAll(label, priceField, updateButton);
@@ -175,33 +191,7 @@ public class InventoryUI extends Application {
         modal.showAndWait();
     }
 
-    private void showUpdateNameWindow(Product selectedProduct) {
-        Stage modal = new Stage();
-        modal.initModality(Modality.APPLICATION_MODAL);
-
-        VBox layout = new VBox(10);
-        layout.setPadding(new Insets(10));
-
-        Label label = new Label("Actualizar nombre para: " + selectedProduct.getName());
-        TextField nameField = new TextField();
-        nameField.setPromptText("Nuevo nombre");
-        Button updateButton = new Button("Actualizar");
-
-        updateButton.setOnAction(e -> {
-            // Aquí coloca la lógica para actualizar el nombre
-            String newName = nameField.getText();
-            selectedProduct.setName(newName);
-            modal.close();
-        });
-
-        layout.getChildren().addAll(label, nameField, updateButton);
-
-        Scene modalScene = new Scene(layout);
-        modal.setScene(modalScene);
-        modal.showAndWait();
-    }
-
-    private void showDeleteProductWindow(Product selectedProduct, ObservableList<Product> productList) {
+    private void showDeleteProductWindow(Product selectedProduct) {
         Stage modal = new Stage();
         modal.initModality(Modality.APPLICATION_MODAL);
 
@@ -213,8 +203,8 @@ public class InventoryUI extends Application {
         Button noButton = new Button("No");
 
         yesButton.setOnAction(e -> {
-            // Aquí coloca la lógica para eliminar el producto
-            productList.remove(selectedProduct);
+            inventory.removeProduct(selectedProduct.getCode()); // Utiliza el método de eliminación de Inventory
+            reloadProducts(); // Recarga los productos en la tabla
             modal.close();
         });
 
@@ -229,6 +219,59 @@ public class InventoryUI extends Application {
         modal.showAndWait();
     }
 
+    private ContextMenu createProductContextMenu(Product selectedProduct) {
+        ContextMenu contextMenu = new ContextMenu();
+
+        MenuItem updatePriceItem = new MenuItem("Actualizar precio");
+        updatePriceItem.setOnAction(e -> {
+            if (selectedProduct != null) {
+                showUpdatePriceWindow(selectedProduct);
+            }
+        });
+
+        MenuItem updateNameItem = new MenuItem("Actualizar nombre");
+        updateNameItem.setOnAction(e -> {
+            if (selectedProduct != null) {
+                showUpdateNameWindow(selectedProduct);
+            }
+        });
+
+        MenuItem deleteProductItem = new MenuItem("Eliminar producto");
+        deleteProductItem.setOnAction(e -> {
+            if (selectedProduct != null) {
+                showDeleteProductWindow(selectedProduct);
+            }
+        });
+
+        contextMenu.getItems().addAll(updatePriceItem, updateNameItem, deleteProductItem);
+        return contextMenu;
+    }
+
+    private void addContextMenuToTableRows() {
+        table.setRowFactory(tableView -> {
+            TableRow<Product> row = new TableRow<>();
+
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty()) {
+                    Product selectedProduct = row.getItem();
+                    if (selectedProduct != null) {
+                        if (event.getButton() == MouseButton.SECONDARY) { // Detecta clic derecho
+                            ContextMenu contextMenu = createProductContextMenu(selectedProduct); // Crea el menú contextual con el producto seleccionado
+                            contextMenu.show(row, event.getScreenX(), event.getScreenY());
+                        } else if (event.getButton() == MouseButton.PRIMARY && row.getContextMenu() != null) { // Detecta clic izquierdo
+                            row.getContextMenu().hide();
+                        }
+                    }
+                }
+            });
+            return row;
+        });
+    }
+
+
+    private void reloadProducts(){
+        table.getItems().clear();
+        table.getItems().addAll(inventory.getProducts());
+    }
+
 }
-
-
