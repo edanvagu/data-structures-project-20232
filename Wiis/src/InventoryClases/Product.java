@@ -3,16 +3,16 @@ package InventoryClases;
 public class Product {
     private String code, name;
     private double price;
-    private int amount;
+    private int quantity;
 
-    public Product(String code, String name, double price, int amount) {
-        if (price < 0 || amount < 0) {
+    public Product(String code, String name, double price, int quantity) {
+        if (price < 0 || quantity < 0) {
             throw new IllegalArgumentException("Price and quantity cannot be negative.");
         }
         this.code = code;
         this.name = name;
         this.price = price;
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
     public String getCode() {
@@ -39,11 +39,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int amount) {
+        this.quantity = amount;
     }
 }

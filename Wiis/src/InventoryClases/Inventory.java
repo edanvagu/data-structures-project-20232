@@ -8,63 +8,89 @@ import java.io.FileNotFoundException;
 
 public class Inventory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
-    private String fileName="inventory.txt";
-    private List<Product> products;
+    private String fileName = "inventory.txt";
+    private HashMap<String, Product> products;
+    private TreeMap<String, Product> alphabeticInventory;
     private int countProducts = 0;
+    static final String productCodeTest = "P9999999"; //código de producto para pruebas
 
     public Inventory() {
-        this.products = new LinkedList<>();
+        this.products = new HashMap<>();
+        this.alphabeticInventory = new TreeMap<>();
     }
 
     public void addProduct(Product product){
-        this.products.add(product);
-        countProducts++;
+        
+        if (product.getCode().equals(productCodeTest)) {
+            long tiempoInicial = System.nanoTime();
+            
+            //this.products.put(product.getCode(), product);
+            this.alphabeticInventory.put(product.getName(), product);
+            
+            long tiempoFinal = System.nanoTime();
+            long tiempoEjecucion = tiempoFinal - tiempoInicial;
+            
+            System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución de inserción: " + tiempoEjecucion + " " +
+                    "nanosegundos");
+        } else {
+            //this.products.put(product.getCode(), product);
+            this.alphabeticInventory.put(product.getName(), product);
+        }   
     }
 
-    public void searchAll(){
-        Product p = getProductByCode("P9999999");
+    public void searchProduct(){        
+        
         long tiempoInicial = System.nanoTime();
-
-        products.contains(p);
+        
+        //products.get(productCode); //prueba para buscar en hashmap
+        alphabeticInventory.get(productCodeTest); //prueba para buscar en treemap
 
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
                 "nanosegundos");
     }
 
-    public void updateAll(){
+    public void updateProduct(){
+                
         long tiempoInicial = System.nanoTime();
-        for (Product product : products) {
-            product.setAmount(product.getAmount()+1);
-        }
+        
+        //products.replace(productCodeTest, products.get(productCodeTest)); //prueba para actualizar en hashmap
+        alphabeticInventory.replace(productCodeTest, alphabeticInventory.get(productCodeTest)); //prueba para actualizar en treemap
+        
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
                 "nanosegundos");
     }
-    public void removeAll() {
-        long tiempoInicial = System.nanoTime();
-        for (Product product : products) {
-            products.remove(product);
-        }
+    
+    public void removeProduct() {
+        
+        long tiempoInicial = System.nanoTime();        
+        
+        //products.remove(productCodeTest); //prueba para eliminar en hashmap
+        alphabeticInventory.remove(productCodeTest); //prueba para eliminar en treemap
+
         long tiempoFinal = System.nanoTime();
         long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-        System.out.println("Tamaño de datos: " + products.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
+        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
                 "nanosegundos");
     }
 
     public boolean updateProductName(String productCode, String newName){
         if(getProductByCode(productCode) != null) {
-            for (Product product : getProducts()) {
-                if (product.getCode().equals(productCode)) {
-                    product.setName(newName);
-                    return true;
-                }
-            }
+            // actualizar el nombre del producto en el mapa
+            alphabeticInventory.remove(getProductByCode(productCode).getName());
+            alphabeticInventory.put(newName, getProductByCode(productCode));
+            // for (Product product : getProducts()) {
+            //     if (product.getCode().equals(productCode)) {
+            //         product.setName(newName);
+            //         return true;
+            //     }
+            // }
         }
         return false;
     }
@@ -73,54 +99,42 @@ public class Inventory {
         if (newPrice < 0) {
             throw new IllegalArgumentException("Price and quantity cannot be negative.");
         }
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                product.setPrice(newPrice);
-                break;
-            }
-        }
+        // for (Product product : getProducts()) {
+        //     if (product.getCode().equals(productCode)) {
+        //         product.setPrice(newPrice);
+        //         break;
+        //     }
+        // }
     }
 
     public Product getProductByCode(String productCode) {
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                return product;
-            }
-        }
-        return null;
+        return this.products.get(productCode);
     }
 
-    public void removeProduct(String productCode){
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                this.products.remove(product);
-                break;
-            }
+    public void removeProductByCode(String productCode) {
+        Product product = getProductByCode(productCode);
+        alphabeticInventory.remove(product.getName());
+        if (product != null) {
+            this.products.remove(productCode);
         }
     }
-
-
-    //public void sortInventory(){
-        //this.products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
-    //}
 
     /*public void printProducts(){
-        this.sortInventory();
-        for (Product p : getProducts()) {
-            System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
+        for (String productName : alphabeticInventory.keySet()) {
+            System.out.println(alphabeticInventory.get(productName).getCode()+" "+alphabeticInventory.get(productName).getName()+" "+alphabeticInventory.get(productName).getPrice()+" "+alphabeticInventory.get(productName).getQuantity());
         }
     }*/
 
     public void filterInventoryByPrice(String operator, double price) throws Exception {
-        for (Product p : getProducts()) {
-            if(operator.equals("less than") && p.getPrice() < price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }else if(operator.equals("equals") && p.getPrice() == price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }else if(operator.equals("more than") && p.getPrice() > price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }
-        }
+        // for (Product p : getProducts()) {
+        //     if(operator.equals("less than") && p.getPrice() < price){
+        //         System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getQuantity());
+        //     }else if(operator.equals("equals") && p.getPrice() == price){
+        //         System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getQuantity());
+        //     }else if(operator.equals("more than") && p.getPrice() > price){
+        //         System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getQuantity());
+        //     }
+        // }
     }
 
     public void saveFile(){
@@ -130,24 +144,23 @@ public class Inventory {
                 folder.mkdirs();
             }
             FileWriter newFile = new FileWriter(this.folderPath+File.separator+this.fileName);
-            for (Product p : getProducts()) {
-                newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getAmount()+ "\n");
-            }
+            // for (Product p : getProducts()) {
+            //     newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getQuantity()+ "\n");
+            // }
             newFile.close();
         } catch (IOException e) {
             System.out.println("An error occurred while saving the file " + this.fileName);
             throw new RuntimeException(e);
         }
     }
+    
     public void loadFile() {
 
         try {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
-            //int tamanio = 10000000;
-            //long tiempoInicial = System.nanoTime();
-            //for (int i = 0; i < tamanio; i++) {
+                
                 String[] line = sc.nextLine().split(",");
                 String productCode = line[0];
                 String productName = line[1];
@@ -157,17 +170,13 @@ public class Inventory {
                 addProduct(new Product(productCode, productName, productPrice, productAmount));
 
             }
-            //long tiempoFinal = System.nanoTime();
-            //long tiempoEjecucion = tiempoFinal - tiempoInicial;
 
-            //System.out.println("Tamaño de datos: " + tamanio + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-              //      "nanosegundos");
             sc.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred while reading the file " + this.fileName);
             throw new RuntimeException(e);
         }
-    }
+    }    
 
     public void setFileName(String folderName) {
         this.fileName = folderName;
@@ -177,7 +186,7 @@ public class Inventory {
         this.folderPath = folderPath;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(HashMap<String, Product> products) {
         this.products = products;
     }
 
@@ -185,8 +194,8 @@ public class Inventory {
         this.countProducts = countProducts;
     }
 
-    public List<Product> getProducts() {
-        return this.products;
+    public HashMap<String, Product> getProducts() {
+        return products;
     }
 
     public String getFileName() {

@@ -2,6 +2,7 @@ package InventoryClases;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
@@ -15,9 +16,11 @@ public class TransactionHistory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
     private String fileName = "transactionHistory.txt";
     private int countTransactions = 0;
+    private PriorityQueue<String[]> mostSoldProducts;
 
     public TransactionHistory(Inventory inventory) {
         this.transactions = new LinkedList<>();
+        this.mostSoldProducts = new PriorityQueue<String[]>((p1, p2) -> Integer.parseInt(p2[1]) - Integer.parseInt(p1[1]));
         this.inventory = inventory;
     }
 
@@ -29,19 +32,29 @@ public class TransactionHistory {
             String productCode = detail.getProductCode();
             int amount = detail.getAmount();
 
-            Product productToUpdate = null;
-            for (Product product : inventory.getProducts()) {
-                if (product.getCode().equals(productCode)) {
-                    productToUpdate = product;
-                    break;
-                }
-            }
+            Product productToUpdate = inventory.getProductByCode(productCode);
+            
             if (productToUpdate != null) {
                 if (transaction.getType().equals("compra")) {
-                    productToUpdate.setAmount(productToUpdate.getAmount() + amount);
+                    productToUpdate.setQuantity(productToUpdate.getQuantity() + amount);
                 } else if (transaction.getType().equals("venta")) {
-                    if (productToUpdate.getAmount() >= amount) {
-                        productToUpdate.setAmount(productToUpdate.getAmount() - amount);
+                    if (productToUpdate.getQuantity() >= amount) {
+                        productToUpdate.setQuantity(productToUpdate.getQuantity() - amount);
+                        
+                        // Actualiza la cola de productos más vendidos
+                        boolean productFound = false;
+                        for (String[] productInfo : mostSoldProducts) {
+                            if (productInfo[0].equals(productToUpdate.getName())) {
+                                productInfo[1] = String.valueOf(Integer.parseInt(productInfo[1]) + amount);
+                                productFound = true;
+                                break;
+                            }
+                        }
+                        if (!productFound) {
+                            mostSoldProducts.add(new String[]{productToUpdate.getName(), String.valueOf(amount)});
+                        }                        
+                        
+
                     } else {
                         System.out.println("No hay suficientes productos para la venta de " + productToUpdate.getName());
                     }
@@ -52,6 +65,15 @@ public class TransactionHistory {
         }
     }
 
+    public void getMostSoldProducts() {
+        int count = 0;
+        while (!mostSoldProducts.isEmpty() && count < 3) {
+            String[] productInfo = mostSoldProducts.poll();
+            System.out.println("Producto: " + productInfo[0] + " Cantidad: " + productInfo[1]);
+            count++;
+        }
+    }
+    
     public int getCountTransactions() {
         return countTransactions;
     }

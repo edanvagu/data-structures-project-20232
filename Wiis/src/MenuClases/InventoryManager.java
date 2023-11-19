@@ -62,14 +62,14 @@ public class InventoryManager {
                     // Realizar Compra
                     // Implementa la lógica para realizar una compra
 
-                    makePurchase();
+                    // makePurchase();
                     break;
 
                 case 6:
                     // Realizar Venta
                     // Implementa la lógica para realizar una venta
 
-                    makeSale();
+                    // makeSale();
                     break;
                 case 7:
 
@@ -186,12 +186,12 @@ public class InventoryManager {
                 System.out.println("Código: " + productToRemove.getCode());
                 System.out.println("Nombre: " + productToRemove.getName());
                 System.out.println("Precio: " + productToRemove.getPrice());
-                System.out.println("Cantidad: " + productToRemove.getAmount());
+                System.out.println("Cantidad: " + productToRemove.getQuantity());
                 System.out.print("Ingrese 's' para confirmar la eliminación o 'n' para cancelar: ");
                 String confirmation = scanner.nextLine().toLowerCase();
 
                 if (confirmation.equals("s")) {
-                    inventory.removeProduct(productCode);
+                    inventory.removeProductByCode(productCode);
                     System.out.println("Producto eliminado con éxito.");
                 } else if (confirmation.equals("n")) {
                     System.out.println("Eliminación cancelada.");
@@ -204,73 +204,73 @@ public class InventoryManager {
         }
     }
 
-    public void makePurchase() {
-        Scanner scanner = new Scanner(System.in);
+    // public void makePurchase() {
+    //     Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.print("Ingrese el código del producto que desea comprar (o '0' para regresar): ");
-            String productCode = scanner.nextLine();
+    //     while (true) {
+    //         System.out.print("Ingrese el código del producto que desea comprar (o '0' para regresar): ");
+    //         String productCode = scanner.nextLine();
 
-            if (productCode.equals("0")) {
-                break; // Regresar al menú principal
-            }
+    //         if (productCode.equals("0")) {
+    //             break; // Regresar al menú principal
+    //         }
 
-            Product productToPurchase = inventory.getProductByCode(productCode);
+    //         Product productToPurchase = inventory.getProductByCode(productCode);
 
-            if (productToPurchase != null) {
-                System.out.print("Ingrese la cantidad que desea comprar: ");
-                int purchaseQuantity = scanner.nextInt();
-                scanner.nextLine(); // Consumir el salto de línea
+    //         if (productToPurchase != null) {
+    //             System.out.print("Ingrese la cantidad que desea comprar: ");
+    //             int purchaseQuantity = scanner.nextInt();
+    //             scanner.nextLine(); // Consumir el salto de línea
 
-                if (purchaseQuantity > 0) {
-                    // Registrar la transacción de compra
-                    Transaction purchaseTransaction =
-                            new Transaction("T"+String.valueOf(transactionHistory.getCountTransactions()), "compra",
-                            "2023-10-08");
-                    purchaseTransaction.addTransactionDetail(productCode, purchaseQuantity);
-                    transactionHistory.addTransaction(purchaseTransaction);
+    //             if (purchaseQuantity > 0) {
+    //                 // Registrar la transacción de compra
+    //                 Transaction purchaseTransaction =
+    //                         new Transaction("T"+String.valueOf(transactionHistory.getCountTransactions()), "compra",
+    //                         "2023-10-08");
+    //                 purchaseTransaction.addTransactionDetail(productCode, purchaseQuantity);
+    //                 transactionHistory.addTransaction(purchaseTransaction);
 
-                    System.out.println("Compra realizada con éxito. Se agregaron " + purchaseQuantity + " unidades al inventario.");
-                } else {
-                    System.out.println("La cantidad debe ser mayor que cero.");
-                }
-            } else {
-                System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
-            }
-        }
-    }
+    //                 System.out.println("Compra realizada con éxito. Se agregaron " + purchaseQuantity + " unidades al inventario.");
+    //             } else {
+    //                 System.out.println("La cantidad debe ser mayor que cero.");
+    //             }
+    //         } else {
+    //             System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
+    //         }
+    //     }
+    // }
 
-    public void makeSale() {
-        Scanner scanner = new Scanner(System.in);
+    // public void makeSale() {
+    //     Scanner scanner = new Scanner(System.in);
 
-        while (true) {
-            System.out.print("Ingrese el código del producto que desea vender (o '0' para regresar): ");
-            String productCode = scanner.nextLine();
+    //     while (true) {
+    //         System.out.print("Ingrese el código del producto que desea vender (o '0' para regresar): ");
+    //         String productCode = scanner.nextLine();
 
-            if (productCode.equals("0")) {
-                break; // Regresar al menú principal
-            }
+    //         if (productCode.equals("0")) {
+    //             break; // Regresar al menú principal
+    //         }
 
-            Product productToSell = inventory.getProductByCode(productCode);
+    //         Product productToSell = inventory.getProductByCode(productCode);
 
-            if (productToSell != null) {
-                System.out.print("Ingrese la cantidad que desea vender: ");
-                int saleQuantity = scanner.nextInt();
-                scanner.nextLine(); // Consumir el salto de línea
+    //         if (productToSell != null) {
+    //             System.out.print("Ingrese la cantidad que desea vender: ");
+    //             int saleQuantity = scanner.nextInt();
+    //             scanner.nextLine(); // Consumir el salto de línea
 
-                if (saleQuantity > 0 && productToSell.getAmount() >= saleQuantity) {
-                    // Registrar la transacción de venta
-                    Transaction saleTransaction = new Transaction("T"+String.valueOf(transactionHistory.getCountTransactions()), "venta", "2023-10-08");
-                    saleTransaction.addTransactionDetail(productCode, saleQuantity);
-                    transactionHistory.addTransaction(saleTransaction);
+    //             if (saleQuantity > 0 && productToSell.getQuantity() >= saleQuantity) {
+    //                 // Registrar la transacción de venta
+    //                 Transaction saleTransaction = new Transaction("T"+String.valueOf(transactionHistory.getCountTransactions()), "venta", "2023-10-08");
+    //                 saleTransaction.addTransactionDetail(productCode, saleQuantity);
+    //                 transactionHistory.addTransaction(saleTransaction);
 
-                    System.out.println("Venta realizada con éxito. Se vendieron " + saleQuantity + " unidades del producto.");
-                } else {
-                    System.out.println("La cantidad debe ser mayor que cero y no puede superar la cantidad disponible.");
-                }
-            } else {
-                System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
-            }
-        }
-    }
+    //                 System.out.println("Venta realizada con éxito. Se vendieron " + saleQuantity + " unidades del producto.");
+    //             } else {
+    //                 System.out.println("La cantidad debe ser mayor que cero y no puede superar la cantidad disponible.");
+    //             }
+    //         } else {
+    //             System.out.println("El producto con código " + productCode + " no se encontró en el inventario.");
+    //         }
+    //     }
+    // }
 }

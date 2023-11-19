@@ -1,4 +1,4 @@
-package InventoryClases;
+package Scripts;
 
 import java.io.BufferedWriter;
 import java.io.File;

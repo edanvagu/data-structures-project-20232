@@ -8,16 +8,17 @@ public class Main {
 
 
         Inventory inventory = new Inventory();
-        TransactionHistory transactionHistory = new TransactionHistory(inventory);
+        //TransactionHistory transactionHistory = new TransactionHistory(inventory);
 
-        inventory.loadFile();
+        inventory.loadFile(); //este método carga el archivo de productos y lo guarda en el hashmap y en el treemap
         //transactionHistory.loadFile();
-        //inventory.removeAll();
-        //inventory.updateAll();
-        inventory.searchAll();
+        //inventory.searchProduct();
+        //inventory.updateProduct();
+        //inventory.removeProduct();
 
 
-        InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
+
+        //InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
 
         //inventoryManager.runInventoryMenu();
 
