@@ -171,7 +171,7 @@ public class InventoryManager {
         }
     }
 
-    //REVISAR DE CÓMO SE ESTÁ GENERANDO LA FECHA EN LAS TRANSACCIONES
+    //REVISAR DE CÓMO SE ESTA GENERANDO LA FECHA EN LAS TRANSACCIONES
     //REVISAR QUE LAS TRANSACCIONES QUE SE HAGAN EN UNA MISMA FECHA QUEDEN AGRUPADAS.
     public void removeProduct() {
         Scanner scanner = new Scanner(System.in);
