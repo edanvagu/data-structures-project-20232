@@ -122,11 +122,14 @@ public class TransactionHistory {
         }
 
     }
-    public void loadFile(){
+    public void loadFile(int cantidad){
         try {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
-            while (sc.hasNextLine()) {
+            for (int i = 0; i < cantidad; i++) {
+
+//            }
+//            while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
                 String transactionCode = line[0];
                 String transactionDate = line[1];

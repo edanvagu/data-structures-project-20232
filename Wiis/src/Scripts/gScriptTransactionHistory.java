@@ -13,7 +13,7 @@ public class gScriptTransactionHistory {
 
         String fileName = folderPath + File.separator + "transactionHistory.txt";
 
-        int cases=10000;
+        int cases=0;
         String[] types = {"compra","venta"};
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
@@ -26,7 +26,7 @@ public class gScriptTransactionHistory {
                 int year = random.nextInt(24) + 2000; // 2000-2023
                 String TransactionDate = String.valueOf(year)+"-"+String.valueOf(month)+"-"+String.valueOf(day);
                 String TransactionType = types[random.nextInt(2)];
-                int cantidadProductos= random.nextInt(20)+1;
+                int cantidadProductos= 1;//random.nextInt(20)+1;
                 //Tener en cuenta para la segunda entrega del proyecto que en el historial de transacciones no puede
                 // haber productos que no estén en el inventario. Es decir, el código del producto debe ir hasta,
                 // como máximo, el mismo valor del último producto del inventario.

@@ -20,64 +20,43 @@ public class Inventory {
     }
 
     public void addProduct(Product product){
-        
-        if (product.getCode().equals(productCodeTest)) {
-            long tiempoInicial = System.nanoTime();
-            
-            //this.products.put(product.getCode(), product);
-            this.alphabeticInventory.put(product.getName(), product);
-            
-            long tiempoFinal = System.nanoTime();
-            long tiempoEjecucion = tiempoFinal - tiempoInicial;
-            
-            System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución de inserción: " + tiempoEjecucion + " " +
-                    "nanosegundos");
-        } else {
-            //this.products.put(product.getCode(), product);
-            this.alphabeticInventory.put(product.getName(), product);
-        }   
+        //HashMap
+
+        this.products.put(product.getCode(), product);
+
+        //TreeMap
+
+        //this.alphabeticInventory.put(product.getName(), product);
+
     }
 
-    public void searchProduct(){        
+    public void searchProduct(String code){
+        //HashMap
         
-        long tiempoInicial = System.nanoTime();
-        
-        //products.get(productCode); //prueba para buscar en hashmap
-        alphabeticInventory.get(productCodeTest); //prueba para buscar en treemap
+        this.products.get(code); //prueba para buscar en hashmap
 
-        long tiempoFinal = System.nanoTime();
-        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+        //TreeMap
+        //this.alphabeticInventory.get(code); //prueba para buscar en treemap
 
-        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-                "nanosegundos");
     }
 
-    public void updateProduct(){
-                
-        long tiempoInicial = System.nanoTime();
-        
-        //products.replace(productCodeTest, products.get(productCodeTest)); //prueba para actualizar en hashmap
-        alphabeticInventory.replace(productCodeTest, alphabeticInventory.get(productCodeTest)); //prueba para actualizar en treemap
-        
-        long tiempoFinal = System.nanoTime();
-        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+    public void updateProduct(String code){
+        //HashMap
 
-        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-                "nanosegundos");
+        products.replace(code, products.get(code)); //prueba para actualizar en hashmap
+
+        //TreeMap
+        //alphabeticInventory.replace(code, alphabeticInventory.get(code)); //prueba para actualizar en treemap
+
     }
     
-    public void removeProduct() {
-        
-        long tiempoInicial = System.nanoTime();        
-        
-        //products.remove(productCodeTest); //prueba para eliminar en hashmap
-        alphabeticInventory.remove(productCodeTest); //prueba para eliminar en treemap
+    public void removeProduct(String code) {
+        //HashMap
+        products.remove(code); //prueba para eliminar en hashmap
 
-        long tiempoFinal = System.nanoTime();
-        long tiempoEjecucion = tiempoFinal - tiempoInicial;
+        //TreeMap
+        //alphabeticInventory.remove(code); //prueba para eliminar en treemap
 
-        System.out.println("Tamaño de datos: " + alphabeticInventory.size() + ", Tiempo de ejecución: " + tiempoEjecucion + " " +
-                "nanosegundos");
     }
 
     public boolean updateProductName(String productCode, String newName){
@@ -85,6 +64,8 @@ public class Inventory {
             // actualizar el nombre del producto en el mapa
             alphabeticInventory.remove(getProductByCode(productCode).getName());
             alphabeticInventory.put(newName, getProductByCode(productCode));
+
+
             // for (Product product : getProducts()) {
             //     if (product.getCode().equals(productCode)) {
             //         product.setName(newName);
@@ -154,11 +135,15 @@ public class Inventory {
         }
     }
     
-    public void loadFile() {
-
+    public void loadFile( ) {
+        int num = 0;
+        long tiempoInicial = System.nanoTime();
         try {
             File file = new File(this.folderPath+File.separator+this.fileName);
             Scanner sc = new Scanner(file);
+            //for (int i = 0; i < num; i++) {
+
+
             while (sc.hasNextLine()) {
                 
                 String[] line = sc.nextLine().split(",");
@@ -176,6 +161,8 @@ public class Inventory {
             System.out.println("An error occurred while reading the file " + this.fileName);
             throw new RuntimeException(e);
         }
+        long tiempoFinal = System.nanoTime();
+        System.out.println("Cantidad de datos = " + num + " y tiempo addProduct = "+ (tiempoFinal - tiempoInicial));
     }    
 
     public void setFileName(String folderName) {
