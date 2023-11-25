@@ -3,18 +3,34 @@ package InventoryClases;
 public class Product {
     private String code, name;
     private double price;
-    private int amount;
+    private int quantity;
 
-    public Product(String code, String name, double price, int amount) {
-        if (price < 0 || amount < 0) {
+    public Product(String code, String name, double price, int quantity) {
+        if (price < 0 || quantity < 0) {
             throw new IllegalArgumentException("Price and quantity cannot be negative.");
         }
         this.code = code;
         this.name = name;
         this.price = price;
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
+    public void increaseQuantity(int amount) {
+        this.quantity += amount;
+    }
+
+    public void decreaseQuantity(int amount) {
+        if (this.quantity >= amount) {
+            this.quantity -= amount;
+        } else {
+            throw new IllegalArgumentException("No hay suficientes productos para la venta de " + this.name);
+        }
+    }
+
+    public boolean hasEnoughQuantity(int amount) {
+        return this.quantity >= amount;
+    }
+    
     public String getCode() {
         return code;
     }
@@ -39,11 +55,11 @@ public class Product {
         this.price = price;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setQuantity(int amount) {
+        this.quantity = amount;
     }
 }

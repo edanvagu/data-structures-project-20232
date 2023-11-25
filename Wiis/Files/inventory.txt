@@ -1,0 +1,2 @@
+P0,Manzana,123.0,4
+P1,Aguacate,46.0,4

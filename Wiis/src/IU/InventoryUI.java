@@ -1,6 +1,5 @@
 package IU;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,19 +14,19 @@ import InventoryClases.*;
 
 
 
-public class InventoryUI extends Application {
-
-    private final Inventory inventory = new Inventory();
+public class InventoryUI {
+    private Stage stage; // El Stage principal
+    private Inventory inventory;
     private TableView<Product> table;
+    
+    public InventoryUI(Stage stage, Inventory inventory) {
+        this.stage = stage;
+        this.inventory = inventory;
+    }    
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        primaryStage.setTitle("Interfaz de Productos");
+    public Scene createScene() {
+        // Cargar el inventario desde un archivo
+        inventory.loadFile();
 
         // Crear botón y campo de texto
         Button addProductButton = new Button("+ Añadir Producto");
@@ -48,29 +47,23 @@ public class InventoryUI extends Application {
         TableColumn<Product, Double> priceCol = new TableColumn<>("Precio");
         priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
 
-        TableColumn<Product, Integer> amountCol = new TableColumn<>("Cantidad");
-        amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        TableColumn<Product, Integer> quantityCol = new TableColumn<>("Cantidad");
+        quantityCol.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-        table.getColumns().addAll(idCol, nameCol, priceCol, amountCol);
+        table.getColumns().addAll(idCol, nameCol, priceCol, quantityCol);
 
         // Vincula el ancho de las columnas al ancho de la tabla
         idCol.prefWidthProperty().bind(table.widthProperty().divide(4)); // 25% width
         nameCol.prefWidthProperty().bind(table.widthProperty().divide(4));
         priceCol.prefWidthProperty().bind(table.widthProperty().divide(4));
-        amountCol.prefWidthProperty().bind(table.widthProperty().divide(4));
+        quantityCol.prefWidthProperty().bind(table.widthProperty().divide(4));
 
         // Organizar los componentes
         HBox topBox = new HBox(10, addProductButton, searchField);
         VBox root = new VBox(10, topBox, table);
         root.setPadding(new Insets(10));
 
-
-
-        Scene scene = new Scene(root, 800, 600);
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        SideMenu sideMenu = new SideMenu();
+        SideMenu sideMenu = new SideMenu(stage);
 
         // Crea un BorderPane y añade el menú lateral y tu vista principal
         BorderPane mainLayout = new BorderPane();
@@ -81,10 +74,8 @@ public class InventoryUI extends Application {
 
         reloadProducts();
 
-        Scene scene1 = new Scene(mainLayout, 1000, 600); // Ajusta el tamaño si es necesario
-        primaryStage.setScene(scene1);
-        primaryStage.show();
-
+        Scene scene = new Scene(mainLayout, 1000, 600); // Ajusta el tamaño si es necesario
+        return scene;
     }
 
     private void showAddProductWindow() {
@@ -112,9 +103,10 @@ public class InventoryUI extends Application {
                 double price = Double.parseDouble(priceField.getText());
                 int quantity = Integer.parseInt(quantityField.getText());
                 String productCode = "P" + String.valueOf(inventory.getCountProducts());
-                Product product = new Product(productCode,name, price, quantity);
+                Product product = new Product(productCode, name, price, quantity);
                 inventory.addProduct(product);
                 messageLabel.setText("Producto añadido con éxito!");
+                inventory.saveFile();
 
                 reloadProducts();
 
@@ -133,7 +125,6 @@ public class InventoryUI extends Application {
         addProductStage.setScene(addProductScene);
         addProductStage.showAndWait(); // Espera hasta que esta ventana se cierre
     }
-
 
     private void showUpdateNameWindow(Product selectedProduct) {
         Stage modal = new Stage();
@@ -268,10 +259,9 @@ public class InventoryUI extends Application {
         });
     }
 
-
-    private void reloadProducts(){
+    private void reloadProducts() {
         table.getItems().clear();
-        table.getItems().addAll(inventory.getProducts());
+        table.getItems().addAll(inventory.getProducts().values());
     }
 
 }

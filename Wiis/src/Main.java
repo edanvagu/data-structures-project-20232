@@ -1,16 +1,8 @@
-import InventoryClases.*;
-import MenuClases.InventoryManager;
-
-import java.util.Scanner;
+import IU.*;
+import javafx.application.Application;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
-        Inventory inventory = new Inventory();
-        TransactionHistory transactionHistory = new TransactionHistory(inventory);
-        InventoryManager inventoryManager = new InventoryManager(inventory, transactionHistory);
-
-        inventoryManager.runInventoryMenu();
-
+        Application.launch(MainUI.class, args);
     }
 }

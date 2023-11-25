@@ -1,26 +1,27 @@
 package IU;
 
+import java.io.IOException;
+
+import InventoryClases.Inventory;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 public class SideMenu extends VBox {
-    public SideMenu() {
+    private Stage stage; // El Stage principal
+    private Inventory inventory;
+
+    public SideMenu(Stage stage) {
+        this.stage = stage;
+        this.inventory = new Inventory();
         setSpacing(10);
         setPadding(new Insets(10));
         setBackground(new Background(new BackgroundFill(Color.DARKGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -30,20 +31,29 @@ public class SideMenu extends VBox {
         title.setTextFill(Color.WHITE);
 
         Button generalBtn = new Button("General");
-        Button mensajesBtn = new Button("Mensajes");
-        // Puedes añadir un pequeño círculo rojo con el número de mensajes no leídos.
-        Circle unreadMsgCircle = new Circle(5, Color.RED);
-        Label unreadMsgLabel = new Label("2");
-        unreadMsgLabel.setTextFill(Color.RED);
-        HBox mensajesBox = new HBox(5, mensajesBtn, unreadMsgCircle, unreadMsgLabel);
+        Button inventoryBtn = new Button("Inventario");
+        inventoryBtn.setOnAction(e -> {
+            InventoryUI inventoryUI = new InventoryUI(stage, inventory);
+            Scene inventoryScene = inventoryUI.createScene();
+            this.stage.setScene(inventoryScene);
+        });
 
-        Button productosBtn = new Button("Productos");
-        Button inventarioBtn = new Button("Inventario");
-        Button transaccionesBtn = new Button("Transacciones");
-        Button otrosBtn = new Button("Otros");
-        Button configuracionBtn = new Button("Configuración");
+        Button transactionsBtn = new Button("Transacciones");
+        transactionsBtn.setOnAction(e -> {
+            TransactionUI transactionUI = new TransactionUI(stage, inventory);
+            Scene transactionScene = null;
+            try {
+                transactionScene = transactionUI.createScene();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            if (transactionScene != null) {
+                this.stage.setScene(transactionScene);
+            }
+        });
 
-        this.getChildren().addAll(title, generalBtn, mensajesBox, productosBtn, inventarioBtn, transaccionesBtn, otrosBtn, configuracionBtn);
+        Button settingsBtn = new Button("Configuración");
+
+        this.getChildren().addAll(title, generalBtn, inventoryBtn, transactionsBtn, settingsBtn);
     }
 }
-

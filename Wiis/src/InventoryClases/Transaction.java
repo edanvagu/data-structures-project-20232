@@ -1,19 +1,49 @@
 package InventoryClases;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.time.LocalDate;
 
 public class Transaction {
+    
+    private static final String COMPRA = "COMPRA";
+    private static final String VENTA = "VENTA";    
+    
     private String type;
-    private String date;
+    private LocalDate date;
     private String transactionCode;
-    private List<TransactionDetail> details;
+    private List<TransactionDetail> details = new ArrayList<>();
 
-    public Transaction(String transactionCode, String type, String date){
+    public Transaction(String transactionCode, String type, LocalDate date){
         this.transactionCode = transactionCode;
         this.type = type;
         this.date = date;
-        this.details = new LinkedList<>();
+    }
+    
+    public void addTransactionDetail(String productCode, int quantity) {
+        TransactionDetail detail = new TransactionDetail(productCode, quantity, this);
+        details.add(detail);
+    }
+
+    public void execute(Inventory inventory) {
+        for (TransactionDetail detail : details) {
+            Product product = inventory.getProductByCode(detail.getProductCode());
+            if (product != null) {
+                if (type.equals(COMPRA)) {
+                    product.increaseQuantity(detail.getQuantity());
+                } else if (type.equals(VENTA)) {
+                    if (product.getQuantity() >= detail.getQuantity()) {
+                        product.decreaseQuantity(detail.getQuantity());
+                    } else {
+                        System.out.println("No hay suficientes productos para la venta de " + product.getName());
+                    }
+                }
+            } else {
+                System.out.println(
+                        "El producto con código " + detail.getProductCode() + " no se encontró en el inventario.");
+            }
+        }
     }
 
     public String getTransactionCode() {
@@ -24,11 +54,6 @@ public class Transaction {
         this.transactionCode = transactionCode;
     }
 
-    public void addTransactionDetail(String productCode, int amount){
-        TransactionDetail detail = new TransactionDetail(productCode, amount);
-        this.details.add(detail);
-    }
-
     public String getType() {
         return type;
     }
@@ -37,11 +62,11 @@ public class Transaction {
         this.type = type;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

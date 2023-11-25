@@ -1,6 +1,7 @@
 package InventoryClases;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
@@ -11,106 +12,77 @@ import java.util.TreeMap;
 public class Inventory {
     private String folderPath = System.getProperty("user.dir") + File.separator + "Files";
     private String fileName="inventory.txt";
-    private ArrayList<Product> products;
-    private TreeMap<String, Product> alphabeticInventory = new TreeMap<>();    
-
-    private int countProducts = 0;
+    private HashMap<String, Product> products;
+    private TreeMap<String, Product> alphabeticInventory;
+    private int countProducts;
     
     public Inventory() {
-        this.products = new ArrayList<>();
+        this.products = new HashMap<>();
+        this.alphabeticInventory = new TreeMap<>();
+        this.countProducts = 0;
     }
-
-    public int getCountProducts() {
-        return countProducts;
-    }
-
-    public void setCountProducts(int countProducts) {
-        this.countProducts = countProducts;
-    }
-
-    public void addProduct(Product product){
-        this.products.add(product);
-        countProducts++;
+    
+    public void addProduct(Product product) {
+        this.products.put(product.getCode(), product);
         alphabeticInventory.put(product.getName(), product);
+        countProducts++;
     }
-
+    
     public boolean updateProductName(String productCode, String newName){
-        if(getProductByCode(productCode) != null) {
-            //actualizar el nombre del producto en el mapa
-            alphabeticInventory.remove(getProductByCode(productCode).getName());
-            alphabeticInventory.put(newName, getProductByCode(productCode));
-            //PENDIENTE ACTUALIZAR EL NOMBRE DEL PRODUCTO SI SE CAMBIA EL NOMBRE
-             
-            for (Product product : getProducts()) {
-                if (product.getCode().equals(productCode)) {
-                    product.setName(newName);
-                    return true;
-                }
-            }
+        Product productToUpdate = products.get(productCode);
+        if(productToUpdate != null) {
+            alphabeticInventory.remove(productToUpdate.getName());
+            productToUpdate.setName(newName);
+            alphabeticInventory.put(newName, productToUpdate);
+            return true;
         }
         return false;
     }
 
-    public void updateProductPrice(String productCode, double newPrice){
+    public void updateProductPrice(String productCode, double newPrice) {
         if (newPrice < 0) {
-            throw new IllegalArgumentException("Price and quantity cannot be negative.");
+            throw new IllegalArgumentException("Price cannot be negative.");
         }
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                product.setPrice(newPrice);
-                break;
-            }
+        Product productToUpdate = products.get(productCode);
+        if (productToUpdate != null) {
+            alphabeticInventory.remove(productToUpdate.getName());
+            productToUpdate.setPrice(newPrice);
+            alphabeticInventory.put(productToUpdate.getName(), productToUpdate);
         }
     }
 
     public Product getProductByCode(String productCode) {
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                return product;
+        return this.products.get(productCode);
+    }
+
+    public void removeProduct(String productCode) {
+        Product productToRemove = getProductByCode(productCode);
+        if (productToRemove != null) {
+            alphabeticInventory.remove(productToRemove.getName());
+            products.remove(productCode);
+        }
+    }
+
+    public ArrayList<Product> filterInventoryByPriceRange(double minPrice, double maxPrice) {
+        ArrayList<Product> filteredProducts = new ArrayList<>();
+        for (Product p : products.values()) {
+            double productPrice = p.getPrice();
+            if (productPrice >= minPrice && productPrice <= maxPrice) {
+                filteredProducts.add(p);
             }
         }
-        return null;
+        return filteredProducts;
     }
 
-    public void removeProduct(String productCode){
-        alphabeticInventory.remove(getProductByCode(productCode).getName());
-        for (Product product : getProducts()) {
-            if (product.getCode().equals(productCode)) {
-                this.products.remove(product);
-                break;
-            }
-        }
-
-    }
-
-    public void printProducts(){
-        //imprime los productos en orden alfabetico
-        for (String productName : alphabeticInventory.keySet()) {
-            System.out.println(alphabeticInventory.get(productName).getCode()+" "+alphabeticInventory.get(productName).getName()+" "+alphabeticInventory.get(productName).getPrice()+" "+alphabeticInventory.get(productName).getAmount());
-        }
-    }
-
-    public void filterInventoryByPrice(String operator, double price) throws Exception {
-        for (Product p : getProducts()) {
-            if(operator.equals("less than") && p.getPrice() < price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }else if(operator.equals("equals") && p.getPrice() == price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }else if(operator.equals("more than") && p.getPrice() > price){
-                System.out.println(p.getCode()+" "+p.getName()+" "+p.getPrice()+" "+p.getAmount());
-            }
-        }
-    }
-
-    public void saveFile(){
-        try{
+    public void saveFile() {
+        try {
             File folder = new File(this.folderPath);
             if (!folder.exists()) {
                 folder.mkdirs();
             }
-            FileWriter newFile = new FileWriter(this.folderPath+File.separator+this.fileName);
-            for (Product p : getProducts()) {
-                newFile.write(p.getCode()+"," +p.getName()+","+p.getPrice()+","+p.getAmount()+ "\n");
+            FileWriter newFile = new FileWriter(this.folderPath + File.separator + this.fileName);
+            for (Product p : products.values()) {
+                newFile.write(p.getCode() + "," + p.getName() + "," + p.getPrice() + "," + p.getQuantity() + "\n");
             }
             newFile.close();
         } catch (IOException e) {
@@ -118,10 +90,13 @@ public class Inventory {
             throw new RuntimeException(e);
         }
     }
+    
     public void loadFile() {
-
         try {
-            File file = new File(this.folderPath+File.separator+this.fileName);
+            File file = new File(this.folderPath + File.separator + this.fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine()) {
                 String[] line = sc.nextLine().split(",");
@@ -132,29 +107,49 @@ public class Inventory {
                 addProduct(new Product(productCode, productName, productPrice, productAmount));
             }
             sc.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("An error occurred while reading the file " + this.fileName);
             throw new RuntimeException(e);
         }
     }
-    public void setFileName(String folderName) {
-        this.fileName = folderName;
-    }
-    public void setFolderPath(String folderPath) {
-        this.folderPath = folderPath;
-    }
-    public void setProducts(ArrayList<Product> products) {
-        this.products = products;
-    }
-    public ArrayList<Product> getProducts() {
-        return this.products;
-    }
-    public String getFileName() {
-        return fileName;
-    }
+
     public String getFolderPath() {
         return folderPath;
     }
 
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
+    }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public HashMap<String, Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(HashMap<String, Product> products) {
+        this.products = products;
+    }
+
+    public TreeMap<String, Product> getAlphabeticInventory() {
+        return alphabeticInventory;
+    }
+
+    public void setAlphabeticInventory(TreeMap<String, Product> alphabeticInventory) {
+        this.alphabeticInventory = alphabeticInventory;
+    }
+
+    public int getCountProducts() {
+        return countProducts;
+    }
+
+    public void setCountProducts(int countProducts) {
+        this.countProducts = countProducts;
+    }
 }
