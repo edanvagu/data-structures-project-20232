@@ -1,9 +1,8 @@
 package InventoryClases;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Transaction {
     
@@ -11,19 +10,21 @@ public class Transaction {
     private static final String VENTA = "VENTA";    
     
     private String type;
-    private LocalDate date;
+    private LocalDateTime date;
     private String transactionCode;
     private List<TransactionDetail> details = new ArrayList<>();
 
-    public Transaction(String transactionCode, String type, LocalDate date){
+    public Transaction(String transactionCode, String type, LocalDateTime date){
         this.transactionCode = transactionCode;
         this.type = type;
         this.date = date;
     }
     
-    public void addTransactionDetail(String productCode, int quantity) {
+    public TransactionDetail addTransactionDetail(String productCode, int quantity) {
         TransactionDetail detail = new TransactionDetail(productCode, quantity, this);
+        detail.setTransactionId(transactionCode);
         details.add(detail);
+        return detail;
     }
 
     public void execute(Inventory inventory) {
@@ -62,11 +63,11 @@ public class Transaction {
         this.type = type;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

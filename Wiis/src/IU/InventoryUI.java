@@ -1,15 +1,21 @@
 package IU;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import InventoryClases.*;
 
 
@@ -27,14 +33,85 @@ public class InventoryUI {
     public Scene createScene() {
         // Cargar el inventario desde un archivo
         inventory.loadFile();
+        
 
-        // Crear botón y campo de texto
+        // Columna 1: Botón Añadir Producto
         Button addProductButton = new Button("+ Añadir Producto");
+        HBox firstColumn = new HBox(addProductButton);
+        HBox.setHgrow(firstColumn, Priority.NEVER); // Esta columna no crecerá y se quedará a la izquierda
+
+        // Columna 2: Filtro de Precio
+        Label priceLabel = new Label("Precio");
+        TextField minPriceField = new TextField();
+        minPriceField.setPromptText("Mínimo");
+        minPriceField.setMaxWidth(80);
+
+        TextField maxPriceField = new TextField();
+        maxPriceField.setPromptText("Máximo");
+        maxPriceField.setMaxWidth(80);
+
+        Button filterPriceButton = new Button("Filtrar por precio");
+        HBox secondColumn = new HBox(10, priceLabel, minPriceField, maxPriceField, filterPriceButton);
+        HBox.setHgrow(secondColumn, Priority.ALWAYS); // Esta columna crecerá y empujará a las otras a los extremos
+
+        // Columna 3: Buscar por ID
         TextField searchField = new TextField();
-        searchField.setPromptText("Producto por ID");
+        searchField.setPromptText("Buscar producto por ID");
+        searchField.setMaxWidth(200);
+
+        HBox thirdColumn = new HBox(searchField);
+        HBox.setHgrow(thirdColumn, Priority.NEVER); // Esta columna no crecerá y se quedará a la derecha
+
+        // Contenedor Principal
+        HBox mainContainer = new HBox(firstColumn, secondColumn, thirdColumn);
+        mainContainer.setSpacing(10); // Ajusta el espaciado general si es necesario
+        mainContainer.setPadding(new Insets(10));
+        HBox.setHgrow(secondColumn, Priority.ALWAYS); // Hace que la segunda columna crezca para empujar a las otras
+
+        // Alineación de los elementos dentro de las columnas
+        firstColumn.setAlignment(Pos.CENTER_LEFT);
+        secondColumn.setAlignment(Pos.CENTER);
+        thirdColumn.setAlignment(Pos.CENTER_RIGHT);
+        
+        // Agrega un listener al campo de texto de búsqueda
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            // Obtiene el texto actual del campo de búsqueda
+            String searchText = newValue;
+
+            // Si el texto de búsqueda no está vacío, busca el producto en el inventario por
+            // ID
+            if (!searchText.isEmpty()) {
+                Product product = inventory.getProductByCode(searchText);
+
+                // Si se encuentra un producto, actualiza la tabla para mostrar solo ese
+                // producto
+                if (product != null) {
+                    table.getItems().clear();
+                    table.getItems().add(product);
+                } else {
+                    // Si no se encuentra un producto, limpia la tabla
+                    table.getItems().clear();
+                }
+            } else {
+                // Si el texto de búsqueda está vacío, actualiza la tabla para mostrar todos los
+                // productos
+                reloadProducts();
+            }
+        });
 
         // Acción para el botón "+Añadir Producto"
         addProductButton.setOnAction(e -> showAddProductWindow());
+        
+        // Acción para el botón "Filtrar por precio"
+        filterPriceButton.setOnAction(e -> {
+            // Utiliza 0 como valor predeterminado para el precio mínimo si el campo está vacío
+            double minPrice = minPriceField.getText().isEmpty() ? 0.0 : Double.parseDouble(minPriceField.getText());
+        
+            // Utiliza un valor grande como predeterminado para el precio máximo si el campo está vacío
+            double maxPrice = maxPriceField.getText().isEmpty() ? Double.MAX_VALUE : Double.parseDouble(maxPriceField.getText());
+        
+            filterProductsByPriceRange(minPrice, maxPrice);
+        });
 
         // Crear la tabla de productos
         table = new TableView<>();
@@ -59,8 +136,7 @@ public class InventoryUI {
         quantityCol.prefWidthProperty().bind(table.widthProperty().divide(4));
 
         // Organizar los componentes
-        HBox topBox = new HBox(10, addProductButton, searchField);
-        VBox root = new VBox(10, topBox, table);
+        VBox root = new VBox(10, mainContainer, table);
         root.setPadding(new Insets(10));
 
         SideMenu sideMenu = new SideMenu(stage);
@@ -126,6 +202,15 @@ public class InventoryUI {
         addProductStage.showAndWait(); // Espera hasta que esta ventana se cierre
     }
 
+    private void filterProductsByPriceRange(double minPrice, double maxPrice) {
+        List<Product> filteredProducts = inventory.getProducts().values().stream()
+                .filter(product -> product.getPrice() >= minPrice && product.getPrice() <= maxPrice)
+                .collect(Collectors.toList());
+    
+        table.getItems().clear();
+        table.getItems().addAll(filteredProducts);
+    }
+    
     private void showUpdateNameWindow(Product selectedProduct) {
         Stage modal = new Stage();
         modal.initModality(Modality.APPLICATION_MODAL);

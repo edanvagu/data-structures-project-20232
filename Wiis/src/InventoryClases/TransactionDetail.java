@@ -6,6 +6,7 @@ public class TransactionDetail {
     private Transaction transaction;
     private String productName;
     private String transactionType;
+    private String transactionId;
 
     public TransactionDetail(String productCode, int quantity, Transaction transaction) {
         this.productCode = productCode;
@@ -51,5 +52,13 @@ public class TransactionDetail {
 
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

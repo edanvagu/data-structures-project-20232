@@ -1,2 +1,4 @@
-P0,Manzana,123.0,4
-P1,Aguacate,46.0,4
+P0,Manzana,123.0,33
+P1,Aguacate,46.0,7
+P2,Pera,567.0,20
+P3,Apio,124.0,18
